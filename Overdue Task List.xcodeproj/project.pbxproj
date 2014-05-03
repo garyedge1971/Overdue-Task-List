@@ -21,6 +21,9 @@
 		1058631719150E89001A84DD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 105862F919150E88001A84DD /* UIKit.framework */; };
 		1058631F19150E89001A84DD /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1058631D19150E89001A84DD /* InfoPlist.strings */; };
 		1058632119150E89001A84DD /* Overdue_Task_ListTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058632019150E89001A84DD /* Overdue_Task_ListTests.m */; };
+		1058632C19150EF1001A84DD /* GEAddTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058632B19150EF1001A84DD /* GEAddTaskViewController.m */; };
+		1058632F19150F07001A84DD /* GEDetailTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058632E19150F07001A84DD /* GEDetailTaskViewController.m */; };
+		1058633219150F1E001A84DD /* GEEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058633119150F1E001A84DD /* GEEditTaskViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +56,12 @@
 		1058631C19150E89001A84DD /* Overdue Task ListTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Overdue Task ListTests-Info.plist"; sourceTree = "<group>"; };
 		1058631E19150E89001A84DD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058632019150E89001A84DD /* Overdue_Task_ListTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Overdue_Task_ListTests.m; sourceTree = "<group>"; };
+		1058632A19150EF1001A84DD /* GEAddTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEAddTaskViewController.h; sourceTree = "<group>"; };
+		1058632B19150EF1001A84DD /* GEAddTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEAddTaskViewController.m; sourceTree = "<group>"; };
+		1058632D19150F07001A84DD /* GEDetailTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEDetailTaskViewController.h; sourceTree = "<group>"; };
+		1058632E19150F07001A84DD /* GEDetailTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEDetailTaskViewController.m; sourceTree = "<group>"; };
+		1058633019150F1E001A84DD /* GEEditTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEEditTaskViewController.h; sourceTree = "<group>"; };
+		1058633119150F1E001A84DD /* GEEditTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEEditTaskViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +126,12 @@
 				1058630719150E88001A84DD /* Main.storyboard */,
 				1058630A19150E88001A84DD /* GEViewController.h */,
 				1058630B19150E88001A84DD /* GEViewController.m */,
+				1058632A19150EF1001A84DD /* GEAddTaskViewController.h */,
+				1058632B19150EF1001A84DD /* GEAddTaskViewController.m */,
+				1058632D19150F07001A84DD /* GEDetailTaskViewController.h */,
+				1058632E19150F07001A84DD /* GEDetailTaskViewController.m */,
+				1058633019150F1E001A84DD /* GEEditTaskViewController.h */,
+				1058633119150F1E001A84DD /* GEEditTaskViewController.m */,
 				1058630D19150E88001A84DD /* Images.xcassets */,
 				105862FC19150E88001A84DD /* Supporting Files */,
 			);
@@ -251,8 +266,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				1058630619150E88001A84DD /* GEAppDelegate.m in Sources */,
+				1058632F19150F07001A84DD /* GEDetailTaskViewController.m in Sources */,
 				1058630C19150E88001A84DD /* GEViewController.m in Sources */,
 				1058630219150E88001A84DD /* main.m in Sources */,
+				1058632C19150EF1001A84DD /* GEAddTaskViewController.m in Sources */,
+				1058633219150F1E001A84DD /* GEEditTaskViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
