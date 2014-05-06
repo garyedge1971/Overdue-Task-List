@@ -7,7 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GETask.h"
 
+@protocol GEAddTaskViewControllerDelegate <NSObject>
+
+@required
+- (void)didCancel;
+- (void)didAddTask:(GETask *)task;
+
+@end
 @interface GEAddTaskViewController : UIViewController
+
+@property (weak, nonatomic) id<GEAddTaskViewControllerDelegate> delegate;
 
 @end

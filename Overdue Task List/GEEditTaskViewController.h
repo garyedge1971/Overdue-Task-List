@@ -7,7 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GETask.h"
+
+@protocol  GEEditTaskViewControllerDelegate<NSObject>
+
+@required
+- (void)didEditTask:(GETask *)oldTask
+      toUpdatedTask:(GETask *)updatedTask;
+
+
+@end
 
 @interface GEEditTaskViewController : UIViewController
+
+@property (weak, nonatomic) id<GEEditTaskViewControllerDelegate> delegate;
+@property (strong, nonatomic) GETask *passedInTask;
 
 @end

@@ -6,6 +6,15 @@
 
 #import <Availability.h>
 
+#define TITLE   @"title"
+#define DESCRIPTION @"description"
+#define DATE @"date"
+#define COMPLETION @"completion"
+#define TASK_ENTRIES @"taskEntries"
+#define DETAIL_PUSH_SEGUE @"DetailPushSegue"
+#define ADD_TASK_SEGUE @"AddTaskSegue"
+#define EDIT_SEGUE @"EditSegue"
+
 #ifndef __IPHONE_5_0
 #warning "This project uses features only available in iOS SDK 5.0 and later."
 #endif

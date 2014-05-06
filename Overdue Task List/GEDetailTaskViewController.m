@@ -7,8 +7,13 @@
 //
 
 #import "GEDetailTaskViewController.h"
+#import "GEEditTaskViewController.h"
 
-@interface GEDetailTaskViewController ()
+@interface GEDetailTaskViewController ()<GEEditTaskViewControllerDelegate>
+
+@property (weak, nonatomic) IBOutlet UILabel *taskName;
+@property (weak, nonatomic) IBOutlet UILabel *dateOfTask;
+@property (weak, nonatomic) IBOutlet UILabel *taskDetails;
 
 @end
 
@@ -25,8 +30,43 @@
 
 - (void)viewDidLoad
 {
+    NSLog(@"viewDidLoad");
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    //[self configureView];
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear:");
+    [self configureView];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    NSLog(@"viewDidAppear:");
+    
+}
+
+- (void)configureView
+{
+    self.taskName.text = self.passedInTask.title;
+    
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"h:mm a EEE MMM d, yyyy"];
+    self.dateOfTask.text = [formatter stringFromDate:[self.passedInTask date]];
+    
+    self.taskDetails.text = self.passedInTask.description;
+}
+
+-(void)didEditTask:(GETask *)oldTask toUpdatedTask:(GETask *)updatedTask
+{
+    self.passedInTask = updatedTask;
+    [self.navigationController popViewControllerAnimated:YES];
+    [self.delegate didPassBack:oldTask andUpdatedTask:updatedTask];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -35,15 +75,22 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
+- (IBAction)editButtonPressed:(id)sender
+{
+    [self performSegueWithIdentifier:EDIT_SEGUE sender:sender];
+}
+
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([[segue destinationViewController] isKindOfClass:[GEEditTaskViewController class]]) {
+        
+        GEEditTaskViewController *editTaskVC = segue.destinationViewController;
+        editTaskVC.passedInTask = self.passedInTask;
+        editTaskVC.delegate = self;
+    }
 }
-*/
 
 @end

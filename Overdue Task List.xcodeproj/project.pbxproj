@@ -24,6 +24,7 @@
 		1058632C19150EF1001A84DD /* GEAddTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058632B19150EF1001A84DD /* GEAddTaskViewController.m */; };
 		1058632F19150F07001A84DD /* GEDetailTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058632E19150F07001A84DD /* GEDetailTaskViewController.m */; };
 		1058633219150F1E001A84DD /* GEEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058633119150F1E001A84DD /* GEEditTaskViewController.m */; };
+		10B4C502191649C800111254 /* GETask.m in Sources */ = {isa = PBXBuildFile; fileRef = 10B4C501191649C800111254 /* GETask.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,8 @@
 		1058632E19150F07001A84DD /* GEDetailTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEDetailTaskViewController.m; sourceTree = "<group>"; };
 		1058633019150F1E001A84DD /* GEEditTaskViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GEEditTaskViewController.h; sourceTree = "<group>"; };
 		1058633119150F1E001A84DD /* GEEditTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEEditTaskViewController.m; sourceTree = "<group>"; };
+		10B4C500191649C800111254 /* GETask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GETask.h; sourceTree = "<group>"; };
+		10B4C501191649C800111254 /* GETask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GETask.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +135,7 @@
 				1058632E19150F07001A84DD /* GEDetailTaskViewController.m */,
 				1058633019150F1E001A84DD /* GEEditTaskViewController.h */,
 				1058633119150F1E001A84DD /* GEEditTaskViewController.m */,
+				10E5A38519170521002C3B61 /* Model */,
 				1058630D19150E88001A84DD /* Images.xcassets */,
 				105862FC19150E88001A84DD /* Supporting Files */,
 			);
@@ -165,6 +169,15 @@
 				1058631D19150E89001A84DD /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		10E5A38519170521002C3B61 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				10B4C500191649C800111254 /* GETask.h */,
+				10B4C501191649C800111254 /* GETask.m */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,6 +284,7 @@
 				1058630219150E88001A84DD /* main.m in Sources */,
 				1058632C19150EF1001A84DD /* GEAddTaskViewController.m in Sources */,
 				1058633219150F1E001A84DD /* GEEditTaskViewController.m in Sources */,
+				10B4C502191649C800111254 /* GETask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +489,7 @@
 				1058632619150E89001A84DD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1058632719150E89001A84DD /* Build configuration list for PBXNativeTarget "Overdue Task ListTests" */ = {
 			isa = XCConfigurationList;
@@ -483,6 +498,7 @@
 				1058632919150E89001A84DD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

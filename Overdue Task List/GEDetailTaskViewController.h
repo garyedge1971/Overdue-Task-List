@@ -7,7 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GETask.h"
 
+@protocol GEDetailTaskViewControllerDelegate <NSObject>
+
+@required
+- (void) didPassBack:(GETask *)oldTask andUpdatedTask:(GETask *)updatedTask;
+
+@end
 @interface GEDetailTaskViewController : UIViewController
+
+@property (weak, nonatomic) id<GEDetailTaskViewControllerDelegate> delegate;
+
+@property (strong, nonatomic) GETask *passedInTask;
 
 @end

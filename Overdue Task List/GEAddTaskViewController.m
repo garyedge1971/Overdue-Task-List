@@ -8,7 +8,11 @@
 
 #import "GEAddTaskViewController.h"
 
-@interface GEAddTaskViewController ()
+@interface GEAddTaskViewController ()<UITextFieldDelegate>
+
+@property (weak, nonatomic) IBOutlet UITextField *titleTextField;
+@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
+@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
 
 @end
 
@@ -27,6 +31,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -35,15 +40,51 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
+#pragma mark - Action Methods
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (IBAction)cancelButtonPressed:(id)sender
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    [self.delegate didCancel];
 }
-*/
+
+- (IBAction)addTaskButtonPressed:(id)sender
+{
+    // Create task object
+    GETask *newTask = [self createANewTask];
+    
+    // Pass back to MainViewController
+    [self.delegate didAddTask:newTask];
+    
+}
+
+#pragma mark - Helper Methods
+
+- (GETask *)createANewTask
+{
+    GETask *newTask = [[GETask alloc]initWithTitle: self.titleTextField.text
+                                       description:self.descriptionTextView.text
+                                              date:self.datePicker.date
+                                        completion:NO];
+    return newTask;
+}
+
+#pragma mark - TextFiels Delegate Methods
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return YES;
+}
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+ {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end
