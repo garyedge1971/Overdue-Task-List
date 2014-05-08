@@ -11,8 +11,9 @@
 @interface GEEditTaskViewController ()<UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *editTitleTextField;
-@property (weak, nonatomic) IBOutlet UITextView *editTextView;
+@property (weak, nonatomic) IBOutlet UITextView *editedDescriptionView;
 @property (weak, nonatomic) IBOutlet UIDatePicker *editDatePicker;
+@property (weak, nonatomic) IBOutlet UISwitch *completeSwitch;
 
 @end
 
@@ -37,8 +38,9 @@
 - (void)configureView
 {
     self.editTitleTextField.text = self.passedInTask.title;
-    self.editTextView.text = self.passedInTask.description;
+    self.editedDescriptionView.text = self.passedInTask.description;
     self.editDatePicker.date = self.passedInTask.date;
+    self.completeSwitch.on = self.passedInTask.completion;
 }
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -47,14 +49,33 @@
     return YES;
 }
 
-- (IBAction)saveButtonPressed:(id)sender {
+#pragma mark - Action Methods
+
+- (IBAction)doneInsertingText:(id)sender
+{
+    [self.editedDescriptionView resignFirstResponder];
+}
+
+- (IBAction)completedSwitchSwitched:(id)sender
+{
+    self.completeSwitch = (UISwitch *)sender;
+    self.passedInTask.completion = self.completeSwitch.on;
+    if (self.completeSwitch.on) {
+        NSLog(@"Switch is on");
+    }
+    else NSLog(@"Switch is off");
     
+}
+
+- (IBAction)saveButtonPressed:(id)sender
+{
     // Create a new Task object
     GETask *updatedTask = [[GETask alloc]initWithTitle:self.editTitleTextField.text
-                                          description:self.editTextView.text
+                                          description:self.editedDescriptionView.text
                                                  date:self.editDatePicker.date
-                                           completion:self.passedInTask.completion];
+                                           completion:self.completeSwitch.on];
     
+    NSLog(@"updated task completion status = %d", self.completeSwitch.on);
     
     [self.delegate didEditTask:self.passedInTask toUpdatedTask:updatedTask];
     

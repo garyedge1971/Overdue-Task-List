@@ -13,8 +13,8 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *taskName;
 @property (weak, nonatomic) IBOutlet UILabel *dateOfTask;
-@property (weak, nonatomic) IBOutlet UILabel *taskDetails;
-
+@property (strong, nonatomic) UILabel *taskDescriptionLabel;
+@property (weak, nonatomic) IBOutlet UISwitch *completeSwitch;
 @end
 
 @implementation GEDetailTaskViewController
@@ -33,7 +33,6 @@
     NSLog(@"viewDidLoad");
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    //[self configureView];
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -43,29 +42,40 @@
     [self configureView];
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-    NSLog(@"viewDidAppear:");
-    
-}
-
 - (void)configureView
 {
     self.taskName.text = self.passedInTask.title;
+    self.completeSwitch.on = self.passedInTask.completion;
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"h:mm a EEE MMM d, yyyy"];
     self.dateOfTask.text = [formatter stringFromDate:[self.passedInTask date]];
     
-    self.taskDetails.text = self.passedInTask.description;
+    if (self.taskDescriptionLabel) {
+        // Remove subView From superView
+        [self.taskDescriptionLabel removeFromSuperview];
+    }
+    // Add Description Label in code to dynamically change size
+    CGRect labelFrame = CGRectMake(20, 190, 280, 260);
+    
+    self.taskDescriptionLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    
+    self.taskDescriptionLabel.numberOfLines = 0;
+    //self.taskDescriptionLabel.backgroundColor = [UIColor lightGrayColor];
+    self.taskDescriptionLabel.text = self.passedInTask.description;
+    // Resize to fit addedText
+    [self.taskDescriptionLabel sizeToFit];
+    // Add to View
+    [self.view addSubview:self.taskDescriptionLabel];
 }
 
 -(void)didEditTask:(GETask *)oldTask toUpdatedTask:(GETask *)updatedTask
 {
     self.passedInTask = updatedTask;
     [self.navigationController popViewControllerAnimated:YES];
+    NSLog(@"popped view controller");
     [self.delegate didPassBack:oldTask andUpdatedTask:updatedTask];
+    NSLog(@"didPassBack:oldTask andUpdatedTask:updatedTask");
     
 }
 
@@ -79,6 +89,19 @@
 {
     [self performSegueWithIdentifier:EDIT_SEGUE sender:sender];
 }
+
+- (IBAction)completedSwitchSwitched:(id)sender
+{
+    self.completeSwitch = (UISwitch *)sender;
+    self.passedInTask.completion = self.completeSwitch.on;
+    
+    if (self.completeSwitch.on) {
+        NSLog(@"Switch is on");
+    }
+    else NSLog(@"Switch is off");
+    
+}
+
 
 #pragma mark - Navigation
 

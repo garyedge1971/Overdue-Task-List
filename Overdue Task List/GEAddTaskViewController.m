@@ -8,11 +8,11 @@
 
 #import "GEAddTaskViewController.h"
 
-@interface GEAddTaskViewController ()<UITextFieldDelegate>
+@interface GEAddTaskViewController ()<UITextFieldDelegate, UITextViewDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField *titleTextField;
+@property (weak, nonatomic) IBOutlet UITextField *editedTextField;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
-@property (weak, nonatomic) IBOutlet UIDatePicker *datePicker;
+@property (weak, nonatomic) IBOutlet UIDatePicker *editedDatePicker;
 
 @end
 
@@ -57,18 +57,22 @@
     
 }
 
+- (IBAction)doneInsertingText:(id)sender {
+    [self.descriptionTextView resignFirstResponder];
+}
+
 #pragma mark - Helper Methods
 
 - (GETask *)createANewTask
 {
-    GETask *newTask = [[GETask alloc]initWithTitle: self.titleTextField.text
+    GETask *newTask = [[GETask alloc]initWithTitle: self.editedTextField.text
                                        description:self.descriptionTextView.text
-                                              date:self.datePicker.date
+                                              date:self.editedDatePicker.date
                                         completion:NO];
     return newTask;
 }
 
-#pragma mark - TextFiels Delegate Methods
+#pragma mark - TextFields Delegate Methods
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {

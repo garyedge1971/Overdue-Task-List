@@ -13,7 +13,11 @@
 
 @interface GEViewController ()<GEAddTaskViewControllerDelegate,GEDetailTaskViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
-@property (strong, nonatomic) NSMutableArray *taskObjects;
+// Arrays
+@property (strong, nonatomic) NSMutableArray *allTaskObjects;
+@property (strong, nonatomic) NSMutableArray *greenObjects;
+@property (strong, nonatomic) NSMutableArray *amberObjects;
+@property (strong, nonatomic) NSMutableArray *redObjects;
 
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -39,7 +43,7 @@
         // Convert to GETask Object
         GETask *aTask = [self taskObjectFromDictObject:storedTask];
         // Add to taskObjects array
-        [self.taskObjects addObject:aTask];
+        [self.allTaskObjects addObject:aTask];
     }
 }
 
@@ -57,27 +61,52 @@
     // Dispose of any resources that can be recreated.
 }
 
-
--(NSMutableArray *)taskObjects
+#pragma mark - lazy instantiations
+-(NSMutableArray *)allTaskObjects
 {
-    if (!_taskObjects) {
-        _taskObjects = [@[]mutableCopy];
+    if (!_allTaskObjects) {
+        _allTaskObjects = [@[]mutableCopy];
     }
     
-    return _taskObjects;
+    return _allTaskObjects;
 }
+
+-(NSMutableArray *)greenObjects
+{
+    if (_greenObjects) {
+        _greenObjects = [@[]mutableCopy];
+    }
+    return _greenObjects;
+}
+
+-(NSMutableArray *)amberObjects
+{
+    if (_amberObjects) {
+        _amberObjects = [@[]mutableCopy];
+    }
+    return _amberObjects;
+}
+
+-(NSMutableArray *)redObjects
+{
+    if (_redObjects) {
+        _redObjects = [@[]mutableCopy];
+    }
+    return _redObjects;
+}
+
 
 #pragma mark - GEDetailView Delegate
 -(void)didPassBack:(GETask *)oldTask andUpdatedTask:(GETask *)updatedTask
 {
     // Remove old task from Array
-    NSUInteger indexOfTask = [self.taskObjects indexOfObject:oldTask];
+    NSUInteger indexOfTask = [self.allTaskObjects indexOfObject:oldTask];
     NSLog(@"index of object to remove is %lu", (unsigned long)indexOfTask);
     
-    [self.taskObjects removeObjectAtIndex:indexOfTask];
+    [self.allTaskObjects removeObjectAtIndex:indexOfTask];
     
     // Add New Task to Array
-    [self.taskObjects insertObject:updatedTask atIndex:indexOfTask];
+    [self.allTaskObjects insertObject:updatedTask atIndex:indexOfTask];
     
     // Save tasks to NSUserDefaults
     
@@ -107,7 +136,7 @@
 
 -(void)didAddTask:(GETask *)task
 {
-    [self.taskObjects addObject:task];
+    [self.allTaskObjects addObject:task];
     
     NSMutableArray *storedTasksArray = [[[NSUserDefaults standardUserDefaults] arrayForKey:TASK_ENTRIES]mutableCopy];
     
@@ -170,10 +199,10 @@
     GETask *updatedTask = [[GETask alloc]initWithTitle:task.title description:task.description date:task.date completion:!(task.completion)];
     
     // Now we can Remove old task from array
-    [self.taskObjects removeObjectAtIndex:indexPath.row];
+    [self.allTaskObjects removeObjectAtIndex:indexPath.row];
     
     // Add the new cloned object in at the same index
-    [self.taskObjects insertObject:updatedTask atIndex:indexPath.row];
+    [self.allTaskObjects insertObject:updatedTask atIndex:indexPath.row];
     
     // Convert this cloned object to NSDictionary object
     NSDictionary *updatedTaskAsDict =  [self taskObjectAsAPropertyList:updatedTask];
@@ -193,13 +222,14 @@
     NSMutableArray *allTasksAsDictionarys = [@[]mutableCopy];
     //iterate through out objects array converting each object to a dict object and add that to allTasksAsDictionary array
     
-    for (GETask *eachTask in self.taskObjects) {
+    for (GETask *eachTask in self.allTaskObjects) {
         NSDictionary *dictTask = [self taskObjectAsAPropertyList:eachTask];
         [allTasksAsDictionarys addObject:dictTask];
     }
     
     // Save Stored array to NSUserDefaults
     [[NSUserDefaults standardUserDefaults] setObject:allTasksAsDictionarys forKey:TASK_ENTRIES];
+    // Always sync after saving
     [[NSUserDefaults standardUserDefaults]synchronize];
     
 }
@@ -208,8 +238,23 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.taskObjects count];
+    
+    return [self.allTaskObjects count];
 }
+
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+//{
+//    return 3;
+//}
+//
+//-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+//{
+//    if (section == 0) return @"completed tasks";
+//    else if (section == 1) return @"incomplete tasks";
+//    
+//    return @"overdue tasks";
+//    
+//}
 
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -217,13 +262,19 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
     // Get Task object for indexPath
-    GETask *selectedTask = self.taskObjects[indexPath.row];
+    GETask *selectedTask = self.allTaskObjects[indexPath.row];
     
     //Get task completion status
     BOOL isComplete = selectedTask.completion;
     
-    // Configure cell
+    // Configure cell and detail label
     cell.textLabel.text = selectedTask.title;
+    //format date for detail label
+    NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
+    [formatter setDateFormat:@"h:mm a EEE MMM d, yyyy"];
+    NSString *date = [formatter stringFromDate:selectedTask.date];
+    cell.detailTextLabel.textColor = [UIColor lightGrayColor];
+    cell.detailTextLabel.text = date;
     
     // Configure cell backgrounds
     if (isComplete) {
@@ -249,7 +300,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Get Task Object at index
-    GETask *selectedTask = self.taskObjects[indexPath.row];
+    GETask *selectedTask = self.allTaskObjects[indexPath.row];
     
     [self updateCompletionOfTask:selectedTask forIndexPath:indexPath];
     
@@ -264,7 +315,7 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.taskObjects removeObjectAtIndex:indexPath.row];
+        [self.allTaskObjects removeObjectAtIndex:indexPath.row];
         
         //delete object from NSUserDefaults
         NSMutableArray *storedArray = [[[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES]mutableCopy];
@@ -273,6 +324,7 @@
         
         // Save Stored array to NSUserDefaults
         [[NSUserDefaults standardUserDefaults] setObject:storedArray forKey:TASK_ENTRIES];
+        //sync after saving
         [[NSUserDefaults standardUserDefaults]synchronize];
         
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -283,13 +335,13 @@
 
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    GETask *taskOnTheMove = self.taskObjects[fromIndexPath.row];
-    [self.taskObjects removeObject:taskOnTheMove];
-    [self.taskObjects insertObject:taskOnTheMove atIndex:toIndexPath.row];
+    GETask *taskOnTheMove = self.allTaskObjects[fromIndexPath.row];
+    [self.allTaskObjects removeObject:taskOnTheMove];
+    [self.allTaskObjects insertObject:taskOnTheMove atIndex:toIndexPath.row];
     
     [self saveTasks];
     
-    NSLog(@"Array = %@", [self.taskObjects description]);
+    NSLog(@"Array = %@", [self.allTaskObjects description]);
 }
 
 
@@ -315,23 +367,11 @@
         GEDetailTaskViewController *detailTaskVC = segue.destinationViewController;
         
         NSIndexPath *indexPath = sender;
-        GETask *taskToPassIn = self.taskObjects[indexPath.row];
+        GETask *taskToPassIn = self.allTaskObjects[indexPath.row];
         
         detailTaskVC.passedInTask = taskToPassIn;
         detailTaskVC.delegate = self;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 @end
