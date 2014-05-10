@@ -131,25 +131,10 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
-
 -(void)didAddTask:(GETask *)task
 {
     [self.allTaskObjects addObject:task];
-    
-    NSMutableArray *storedTasksArray = [[[NSUserDefaults standardUserDefaults] arrayForKey:TASK_ENTRIES]mutableCopy];
-    
-    if (!storedTasksArray) {
-        storedTasksArray = [[NSMutableArray alloc]init];
-    }
-    
-    [storedTasksArray addObject:[self taskObjectAsAPropertyList:task]];
-    
-    // Persist Data
-    
-    [[NSUserDefaults standardUserDefaults] setObject:storedTasksArray forKey:TASK_ENTRIES];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    
+    [self saveTasks];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -193,7 +178,6 @@
             [self.redObjects addObject:task];
         }
     }
-    NSLog(@"Green array = %lu Amber array = %lu Red array = %lu", (unsigned long)self.greenObjects.count, (unsigned long)self.amberObjects.count, (unsigned long)self.redObjects.count);
 }
 
 -(NSDictionary *)taskObjectAsAPropertyList:(GETask *)taskObject
@@ -233,29 +217,11 @@
     // Get indexPath of passed in task in the allTaskObjects array.
     NSUInteger index = [self.allTaskObjects indexOfObject:task];
     
+    GETask *selectedTask = self.allTaskObjects[index];
     
-    // Get Stored Array
-    NSMutableArray *storedArray = [[[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES]mutableCopy];
-    // Remove Entry From Array
-    [storedArray removeObjectAtIndex:index];
+    selectedTask.completion = !selectedTask.completion;
     
-    // Create new updatedtask from this one
-    GETask *updatedTask = [[GETask alloc]initWithTitle:task.title description:task.description date:task.date completion:!(task.completion)];
-    
-    // Now we can Remove old task from array
-    [self.allTaskObjects removeObjectAtIndex:index];
-    
-    // Add the new cloned object in at the same index
-    [self.allTaskObjects insertObject:updatedTask atIndex:index];
-    
-    // Convert this cloned object to NSDictionary object
-    NSDictionary *updatedTaskAsDict =  [self taskObjectAsAPropertyList:updatedTask];
-    [storedArray insertObject:updatedTaskAsDict atIndex:index];
-    
-    // Save Stored array to NSUserDefaults
-    [[NSUserDefaults standardUserDefaults] setObject:storedArray forKey:TASK_ENTRIES];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    
+    [self saveTasks];
     [self arrangeAllTasksIntoColorCodedArrays];
     [self.tableView reloadData];
     
@@ -437,7 +403,7 @@
 //    GETask *taskToMove;
 //    NSUInteger section = fromIndexPath.section;
 //    NSUInteger row = toIndexPath.row;
-//    
+//
 //    switch (section) {
 //        case 0:
 //            taskToMove = self.greenObjects[row];
@@ -448,17 +414,17 @@
 //        case 2:
 //            taskToMove = self.redObjects[row];
 //            break;
-//            
+//
 //        default:
 //            break;
 //    }
-//    
+//
 //    [self.allTaskObjects removeObject:taskToMove];
 //    [self.allTaskObjects insertObject:taskOnTheMove atIndex:toIndexPath.row];
-//    
+//
 //    [self saveTasks];
 //    [self arrangeAllTasksIntoColorCodedArrays];
-//    
+//
 //    NSLog(@"task moved");
 //}
 
