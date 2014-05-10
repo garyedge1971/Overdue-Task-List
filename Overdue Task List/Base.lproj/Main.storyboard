@@ -55,7 +55,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Tasks" id="M5Q-ge-8bv">
-                        <barButtonItem key="leftBarButtonItem" title="reorder" id="5n0-GY-0hl">
+                        <barButtonItem key="leftBarButtonItem" title="Delete" id="5n0-GY-0hl">
                             <connections>
                                 <action selector="reorderButtonPressed:" destination="vXZ-lx-hvc" id="e41-T1-JOB"/>
                             </connections>
@@ -103,17 +103,24 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tEG-Ii-6J1">
-                                <rect key="frame" x="20" y="376" width="51" height="31"/>
+                                <rect key="frame" x="136" y="429" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="completedSwitchSwitched:" destination="kcx-m0-U3u" eventType="valueChanged" id="cid-Td-AHi"/>
                                 </connections>
                             </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="task complete" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nZD-KT-GQ1">
+                                <rect key="frame" x="106" y="400" width="109" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Task Details" id="Ygk-he-OOn">
-                        <barButtonItem key="rightBarButtonItem" title="edit" id="TQX-P9-MYb">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="TQX-P9-MYb">
                             <connections>
                                 <action selector="editButtonPressed:" destination="kcx-m0-U3u" id="ZFT-5h-hZC"/>
                             </connections>
@@ -198,17 +205,23 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </button>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cDg-MP-YBS">
-                                <rect key="frame" x="20" y="302" width="51" height="31"/>
+                                <rect key="frame" x="136" y="302" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="completedSwitchSwitched:" destination="AUP-u2-eLq" eventType="valueChanged" id="Zhs-50-1os"/>
                                 </connections>
                             </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="task complete" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zm6-yH-jph">
+                                <rect key="frame" x="19" y="307" width="109" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Edit Task" id="hpN-I6-FPA">
-                        <barButtonItem key="rightBarButtonItem" title="save" id="kE9-tb-z0N">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="kE9-tb-z0N">
                             <connections>
                                 <action selector="saveButtonPressed:" destination="AUP-u2-eLq" id="dop-vW-ALL"/>
                             </connections>
@@ -262,7 +275,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </button>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="task name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GMb-gW-Wxg">
-                                <rect key="frame" x="20" y="107" width="276" height="30"/>
+                                <rect key="frame" x="20" y="86" width="276" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -271,7 +284,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </textField>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ISc-nD-Ycq">
-                                <rect key="frame" x="20" y="157" width="280" height="170"/>
+                                <rect key="frame" x="20" y="124" width="280" height="170"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -306,7 +319,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </timeZone>
                             </datePicker>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NEQ-Zi-2Ob">
-                                <rect key="frame" x="254" y="335" width="37" height="30"/>
+                                <rect key="frame" x="244" y="302" width="56" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <state key="normal" title="Done">

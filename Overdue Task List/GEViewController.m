@@ -29,27 +29,13 @@
     BOOL _isEditing;
 }
 
-- (void)retrieveStoredData
-{
-    [self.allTaskObjects removeAllObjects];
-    
-    // Get Stored Data
-    NSArray *allStoredData = [[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES];
-    
-    for (NSDictionary *storedTask in allStoredData) {
-        // Convert to GETask Object
-        GETask *aTask = [self taskObjectFromDictObject:storedTask];
-        // Add to taskObjects array
-        [self.allTaskObjects addObject:aTask];
-    }
-}
-
 - (void)viewDidLoad
 {
     NSLog(@"viewDidLoad");
     
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    self.tableView.backgroundColor = [UIColor blackColor];
     
     [self retrieveStoredData];
     [self arrangeAllTasksIntoColorCodedArrays];
@@ -60,9 +46,10 @@
     [super viewWillAppear:animated];
     NSLog(@"viewWillAppear");
     
+    [self saveTasks];
     [self retrieveStoredData];
     [self arrangeAllTasksIntoColorCodedArrays];
-
+    
     [self.tableView reloadData];
     
 }
@@ -168,6 +155,21 @@
 
 #pragma mark - Helper Methods
 
+- (void)retrieveStoredData
+{
+    [self.allTaskObjects removeAllObjects];
+    
+    // Get Stored Data
+    NSArray *allStoredData = [[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES];
+    
+    for (NSDictionary *storedTask in allStoredData) {
+        // Convert to GETask Object
+        GETask *aTask = [self taskObjectFromDictObject:storedTask];
+        // Add to taskObjects array
+        [self.allTaskObjects addObject:aTask];
+    }
+}
+
 -(void)arrangeAllTasksIntoColorCodedArrays
 {
     // Remove all existing objects
@@ -230,7 +232,7 @@
 {
     // Get indexPath of passed in task in the allTaskObjects array.
     NSUInteger index = [self.allTaskObjects indexOfObject:task];
-
+    
     
     // Get Stored Array
     NSMutableArray *storedArray = [[[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES]mutableCopy];
@@ -256,10 +258,7 @@
     
     [self arrangeAllTasksIntoColorCodedArrays];
     [self.tableView reloadData];
-    NSLog(@"Call ReloadDate");
     
-    
-
 }
 
 - (void)saveTasks
@@ -277,7 +276,7 @@
     [[NSUserDefaults standardUserDefaults] setObject:allTasksAsDictionarys forKey:TASK_ENTRIES];
     // Always sync after saving
     [[NSUserDefaults standardUserDefaults]synchronize];
-    NSLog(@"Saved Tasks");
+    
 }
 
 #pragma mark - TableView Datasource Methods
@@ -302,15 +301,16 @@
 {
     if (section == 0) return @"completed tasks";
     else if (section == 1) return @"incomplete tasks";
-
+    
     return @"overdue tasks";
-
+    
 }
 
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"Cell for row at indexPath executed");
+    NSLog(@"cellForRowAtIndexPath: executed");
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
     GETask *selectedTask;
@@ -396,40 +396,76 @@
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [self.allTaskObjects removeObjectAtIndex:indexPath.row];
         
-        //delete object from NSUserDefaults
-        NSMutableArray *storedArray = [[[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES]mutableCopy];
-        // Remove Entry From Array
-        [storedArray removeObjectAtIndex:indexPath.row];
+        // Remove task from allTaskObjects
+        GETask *taskToDelete;
+        NSUInteger section = indexPath.section;
+        NSUInteger row = indexPath.row;
         
-        // Save Stored array to NSUserDefaults
-        [[NSUserDefaults standardUserDefaults] setObject:storedArray forKey:TASK_ENTRIES];
-        //sync after saving
-        [[NSUserDefaults standardUserDefaults]synchronize];
+        switch (section) {
+            case 0:
+                taskToDelete = self.greenObjects[row];
+                break;
+            case 1:
+                taskToDelete = self.amberObjects[row];
+                break;
+            case 2:
+                taskToDelete = self.redObjects[row];
+                break;
+                
+            default:
+                break;
+        }
+        
+        [self.allTaskObjects removeObject:taskToDelete];
+        
+        [self saveTasks];
+        [self arrangeAllTasksIntoColorCodedArrays];
+        
+        // *** Reloaddata ****
         
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        NSLog(@"row deleted");
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
+    
 }
 
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-    GETask *taskOnTheMove = self.allTaskObjects[fromIndexPath.row];
-    [self.allTaskObjects removeObject:taskOnTheMove];
-    [self.allTaskObjects insertObject:taskOnTheMove atIndex:toIndexPath.row];
-    
-    [self saveTasks];
-    
-    NSLog(@"Array = %@", [self.allTaskObjects description]);
-}
+//- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+//{
+//    GETask *taskToMove;
+//    NSUInteger section = fromIndexPath.section;
+//    NSUInteger row = toIndexPath.row;
+//    
+//    switch (section) {
+//        case 0:
+//            taskToMove = self.greenObjects[row];
+//            break;
+//        case 1:
+//            taskToMove = self.amberObjects[row];
+//            break;
+//        case 2:
+//            taskToMove = self.redObjects[row];
+//            break;
+//            
+//        default:
+//            break;
+//    }
+//    
+//    [self.allTaskObjects removeObject:taskToMove];
+//    [self.allTaskObjects insertObject:taskOnTheMove atIndex:toIndexPath.row];
+//    
+//    [self saveTasks];
+//    [self arrangeAllTasksIntoColorCodedArrays];
+//    
+//    NSLog(@"task moved");
+//}
 
 
 - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return YES;
+    return NO;
 }
 
 
@@ -458,7 +494,7 @@
             taskToPassIn = self.amberObjects[indexPath.row];
         }
         else if (indexPath.section == 2){
-            taskToPassIn = self.amberObjects[indexPath.row];
+            taskToPassIn = self.redObjects[indexPath.row];
         }
         
         detailTaskVC.passedInTask = taskToPassIn;
