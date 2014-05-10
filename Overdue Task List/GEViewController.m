@@ -35,7 +35,7 @@
     
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.tableView.backgroundColor = [UIColor blackColor];
+    self.tableView.backgroundColor = [UIColor clearColor];
     
     [self retrieveStoredData];
     [self arrangeAllTasksIntoColorCodedArrays];
@@ -292,9 +292,6 @@
         selectedTask = self.redObjects[indexPath.row];
     }
     
-    //Get task completion status
-    BOOL isComplete = selectedTask.completion;
-    
     // Configure cell and detail label
     cell.textLabel.text = selectedTask.title;
     //format date for detail label
@@ -305,16 +302,15 @@
     cell.detailTextLabel.text = date;
     
     // Configure cell backgrounds
-    if (isComplete) {
+    if (indexPath.section == 0) {
         cell.backgroundColor = [UIColor greenColor];
     }
-    else if ([self isDateGreaterThanCurrentDate:selectedTask.date]) {
+    else if (indexPath.section == 1) {
         cell.backgroundColor = [UIColor yellowColor];
     }
     else cell.backgroundColor = [UIColor redColor];
     
     return cell;
-    
 }
 
 

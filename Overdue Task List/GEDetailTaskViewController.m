@@ -42,6 +42,14 @@
     [self configureView];
 }
 
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - Helper Methods
+
 - (void)configureView
 {
     self.taskName.text = self.passedInTask.title;
@@ -55,8 +63,9 @@
         // Remove subView From superView
         [self.taskDescriptionLabel removeFromSuperview];
     }
+    
     // Add Description Label in code to dynamically change size
-    CGRect labelFrame = CGRectMake(20, 190, 280, 260);
+    CGRect labelFrame = CGRectMake(20, 210, 280, 260);
     
     self.taskDescriptionLabel = [[UILabel alloc] initWithFrame:labelFrame];
     
@@ -69,6 +78,8 @@
     [self.view addSubview:self.taskDescriptionLabel];
 }
 
+#pragma mark - Delegate Methods
+
 -(void)didEditTask:(GETask *)oldTask toUpdatedTask:(GETask *)updatedTask
 {
     self.passedInTask = updatedTask;
@@ -79,12 +90,7 @@
     
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
+#pragma mark - Action Methods
 - (IBAction)editButtonPressed:(id)sender
 {
     [self performSegueWithIdentifier:EDIT_SEGUE sender:sender];
