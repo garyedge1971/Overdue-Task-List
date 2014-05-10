@@ -29,12 +29,9 @@
     BOOL _isEditing;
 }
 
-- (void)viewDidLoad
+- (void)retrieveStoredData
 {
-    NSLog(@"viewDidLoad");
-    
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    [self.allTaskObjects removeAllObjects];
     
     // Get Stored Data
     NSArray *allStoredData = [[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES];
@@ -47,10 +44,25 @@
     }
 }
 
+- (void)viewDidLoad
+{
+    NSLog(@"viewDidLoad");
+    
+    [super viewDidLoad];
+	// Do any additional setup after loading the view, typically from a nib.
+    
+    [self retrieveStoredData];
+    [self arrangeAllTasksIntoColorCodedArrays];
+}
+
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear");
     
+    [self retrieveStoredData];
+    [self arrangeAllTasksIntoColorCodedArrays];
+
     [self.tableView reloadData];
     
 }
@@ -73,7 +85,7 @@
 
 -(NSMutableArray *)greenObjects
 {
-    if (_greenObjects) {
+    if (!_greenObjects) {
         _greenObjects = [@[]mutableCopy];
     }
     return _greenObjects;
@@ -81,7 +93,7 @@
 
 -(NSMutableArray *)amberObjects
 {
-    if (_amberObjects) {
+    if (!_amberObjects) {
         _amberObjects = [@[]mutableCopy];
     }
     return _amberObjects;
@@ -89,7 +101,7 @@
 
 -(NSMutableArray *)redObjects
 {
-    if (_redObjects) {
+    if (!_redObjects) {
         _redObjects = [@[]mutableCopy];
     }
     return _redObjects;
@@ -155,6 +167,33 @@
 }
 
 #pragma mark - Helper Methods
+
+-(void)arrangeAllTasksIntoColorCodedArrays
+{
+    // Remove all existing objects
+    [self.greenObjects removeAllObjects];
+    [self.amberObjects removeAllObjects];
+    [self.redObjects removeAllObjects];
+    
+    // Iterate throught the main array of objects and add them in
+    for (GETask *task in self.allTaskObjects) {
+        
+        if (task.completion) {
+            [self.greenObjects addObject:task];
+        }
+        
+        else if ([self isDateGreaterThanCurrentDate:task.date]) {
+            [self.amberObjects addObject:task];
+        }
+        
+        else{
+            // Put task into the overdue array
+            [self.redObjects addObject:task];
+        }
+    }
+    NSLog(@"Green array = %lu Amber array = %lu Red array = %lu", (unsigned long)self.greenObjects.count, (unsigned long)self.amberObjects.count, (unsigned long)self.redObjects.count);
+}
+
 -(NSDictionary *)taskObjectAsAPropertyList:(GETask *)taskObject
 {
     NSDictionary *taskAsDict = [[NSDictionary alloc]init];
@@ -179,7 +218,7 @@
 - (BOOL)isDateGreaterThanCurrentDate:(NSDate *)date
 {
     NSTimeInterval time = [date timeIntervalSinceNow];
-    NSLog(@"Time Interval = %f", time);
+    
     if (time >0) {
         return YES;
     }
@@ -189,31 +228,38 @@
 
 -(void)updateCompletionOfTask:(GETask *)task forIndexPath:(NSIndexPath *)indexPath
 {
+    // Get indexPath of passed in task in the allTaskObjects array.
+    NSUInteger index = [self.allTaskObjects indexOfObject:task];
+
     
     // Get Stored Array
     NSMutableArray *storedArray = [[[NSUserDefaults standardUserDefaults]arrayForKey:TASK_ENTRIES]mutableCopy];
     // Remove Entry From Array
-    [storedArray removeObjectAtIndex:indexPath.row];
+    [storedArray removeObjectAtIndex:index];
     
     // Create new updatedtask from this one
     GETask *updatedTask = [[GETask alloc]initWithTitle:task.title description:task.description date:task.date completion:!(task.completion)];
     
     // Now we can Remove old task from array
-    [self.allTaskObjects removeObjectAtIndex:indexPath.row];
+    [self.allTaskObjects removeObjectAtIndex:index];
     
     // Add the new cloned object in at the same index
-    [self.allTaskObjects insertObject:updatedTask atIndex:indexPath.row];
+    [self.allTaskObjects insertObject:updatedTask atIndex:index];
     
     // Convert this cloned object to NSDictionary object
     NSDictionary *updatedTaskAsDict =  [self taskObjectAsAPropertyList:updatedTask];
-    [storedArray insertObject:updatedTaskAsDict atIndex:indexPath.row];
+    [storedArray insertObject:updatedTaskAsDict atIndex:index];
     
     // Save Stored array to NSUserDefaults
     [[NSUserDefaults standardUserDefaults] setObject:storedArray forKey:TASK_ENTRIES];
     [[NSUserDefaults standardUserDefaults]synchronize];
     
+    [self arrangeAllTasksIntoColorCodedArrays];
     [self.tableView reloadData];
+    NSLog(@"Call ReloadDate");
     
+    
+
 }
 
 - (void)saveTasks
@@ -231,38 +277,54 @@
     [[NSUserDefaults standardUserDefaults] setObject:allTasksAsDictionarys forKey:TASK_ENTRIES];
     // Always sync after saving
     [[NSUserDefaults standardUserDefaults]synchronize];
-    
+    NSLog(@"Saved Tasks");
 }
 
 #pragma mark - TableView Datasource Methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    
-    return [self.allTaskObjects count];
+    if (section == 0) {
+        return self.greenObjects.count;
+    }
+    else if (section == 1){
+        return self.amberObjects.count;
+    }
+    else return self.redObjects.count;
 }
 
-//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-//{
-//    return 3;
-//}
-//
-//-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-//{
-//    if (section == 0) return @"completed tasks";
-//    else if (section == 1) return @"incomplete tasks";
-//    
-//    return @"overdue tasks";
-//    
-//}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 3;
+}
+
+-(NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    if (section == 0) return @"completed tasks";
+    else if (section == 1) return @"incomplete tasks";
+
+    return @"overdue tasks";
+
+}
 
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"Cell for row at indexPath executed");
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
-    // Get Task object for indexPath
-    GETask *selectedTask = self.allTaskObjects[indexPath.row];
+    GETask *selectedTask;
+    
+    if (indexPath.section == 0) {
+        selectedTask = self.greenObjects[indexPath.row];
+        
+    }
+    else if (indexPath.section == 1) {
+        selectedTask = self.amberObjects[indexPath.row];
+    }
+    else{
+        selectedTask = self.redObjects[indexPath.row];
+    }
     
     //Get task completion status
     BOOL isComplete = selectedTask.completion;
@@ -289,6 +351,7 @@
     
 }
 
+
 #pragma mark - TableView Delegate Methods
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
@@ -300,7 +363,26 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Get Task Object at index
-    GETask *selectedTask = self.allTaskObjects[indexPath.row];
+    NSUInteger section = indexPath.section;
+    NSUInteger row = indexPath.row;
+    
+    GETask *selectedTask;
+    switch (section) {
+        case 0:
+            selectedTask = self.greenObjects[row];
+            break;
+        case 1:
+            selectedTask = self.amberObjects[row];
+            break;
+        case 2:
+            selectedTask = self.redObjects[row];
+            break;
+            
+        default:
+            break;
+    }
+    
+    
     
     [self updateCompletionOfTask:selectedTask forIndexPath:indexPath];
     
@@ -366,8 +448,18 @@
     {
         GEDetailTaskViewController *detailTaskVC = segue.destinationViewController;
         
+        GETask *taskToPassIn;
+        
         NSIndexPath *indexPath = sender;
-        GETask *taskToPassIn = self.allTaskObjects[indexPath.row];
+        if (indexPath.section == 0) {
+            taskToPassIn = self.greenObjects[indexPath.row];
+        }
+        else if (indexPath.section == 1){
+            taskToPassIn = self.amberObjects[indexPath.row];
+        }
+        else if (indexPath.section == 2){
+            taskToPassIn = self.amberObjects[indexPath.row];
+        }
         
         detailTaskVC.passedInTask = taskToPassIn;
         detailTaskVC.delegate = self;
