@@ -303,12 +303,12 @@
     
     // Configure cell backgrounds
     if (indexPath.section == 0) {
-        cell.backgroundColor = [UIColor greenColor];
+        cell.backgroundColor = RGB(50*(indexPath.row), 255, 50*(indexPath.row));
     }
     else if (indexPath.section == 1) {
-        cell.backgroundColor = [UIColor yellowColor];
+        cell.backgroundColor = RGB(255, 234+(indexPath.row*2), 50*(indexPath.row));
     }
-    else cell.backgroundColor = [UIColor redColor];
+    else cell.backgroundColor = RGB(255, 50*(indexPath.row), 50*(indexPath.row));
     
     return cell;
 }
