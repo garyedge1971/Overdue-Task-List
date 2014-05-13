@@ -12,9 +12,7 @@
 @protocol  GEEditTaskViewControllerDelegate<NSObject>
 
 @required
-- (void)didEditTask:(GETask *)oldTask
-      toUpdatedTask:(GETask *)updatedTask;
-
+- (void)didEditTask;
 
 @end
 

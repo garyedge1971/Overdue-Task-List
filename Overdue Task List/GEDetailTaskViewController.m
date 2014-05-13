@@ -80,13 +80,11 @@
 
 #pragma mark - Delegate Methods
 
--(void)didEditTask:(GETask *)oldTask toUpdatedTask:(GETask *)updatedTask
+-(void)didEditTask
 {
-    self.passedInTask = updatedTask;
     [self.navigationController popViewControllerAnimated:YES];
-    NSLog(@"popped view controller");
-    [self.delegate didPassBack:oldTask andUpdatedTask:updatedTask];
-    NSLog(@"didPassBack:oldTask andUpdatedTask:updatedTask");
+   
+    [self.delegate didEditTask];
     
 }
 

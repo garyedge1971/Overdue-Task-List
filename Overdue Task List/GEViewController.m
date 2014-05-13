@@ -9,18 +9,25 @@
 #import "GEViewController.h"
 #import "GEAddTaskViewController.h"
 #import "GEDetailTaskViewController.h"
+#import "GESettingsTableViewController.h"
 #import "GETask.h"
+#import "GESettings.h"
 
 @interface GEViewController ()<GEAddTaskViewControllerDelegate,GEDetailTaskViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 // Arrays
 @property (strong, nonatomic) NSMutableArray *allTaskObjects;
-@property (strong, nonatomic) NSMutableArray *greenObjects;
-@property (strong, nonatomic) NSMutableArray *amberObjects;
-@property (strong, nonatomic) NSMutableArray *redObjects;
+@property (strong, nonatomic) NSMutableArray *greenTasks;
+@property (strong, nonatomic) NSMutableArray *amberTasks;
+@property (strong, nonatomic) NSMutableArray *redTasks;
+@property (strong, nonatomic) NSArray *greenOrderedTasks;
+@property (strong, nonatomic) NSArray *amberOrderedTasks;
+@property (strong, nonatomic) NSArray *redOrderedTasks;
 
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+
+@property (strong, nonatomic) GESettings *settings;
 
 @end
 
@@ -39,6 +46,9 @@
     
     [self retrieveStoredData];
     [self arrangeAllTasksIntoColorCodedArrays];
+    [self arrangeTasksIntoAlphabeticalOrder];
+    
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated
@@ -49,6 +59,7 @@
     [self saveTasks];
     [self retrieveStoredData];
     [self arrangeAllTasksIntoColorCodedArrays];
+    [self arrangeTasksIntoAlphabeticalOrder];
     
     [self.tableView reloadData];
     
@@ -61,6 +72,17 @@
 }
 
 #pragma mark - lazy instantiations
+
+-(GESettings *)settings
+{
+    if (!_settings) {
+        _settings = [[GESettings alloc]init];
+        _settings.isCapitalised = YES;
+    }
+    
+    return _settings;
+}
+
 -(NSMutableArray *)allTaskObjects
 {
     if (!_allTaskObjects) {
@@ -70,54 +92,66 @@
     return _allTaskObjects;
 }
 
--(NSMutableArray *)greenObjects
+-(NSMutableArray *)greenTasks
 {
-    if (!_greenObjects) {
-        _greenObjects = [@[]mutableCopy];
+    if (!_greenTasks) {
+        _greenTasks = [@[]mutableCopy];
     }
-    return _greenObjects;
+    return _greenTasks;
 }
 
--(NSMutableArray *)amberObjects
+-(NSMutableArray *)amberTasks
 {
-    if (!_amberObjects) {
-        _amberObjects = [@[]mutableCopy];
+    if (!_amberTasks) {
+        _amberTasks = [@[]mutableCopy];
     }
-    return _amberObjects;
+    return _amberTasks;
 }
 
--(NSMutableArray *)redObjects
+-(NSMutableArray *)redTasks
 {
-    if (!_redObjects) {
-        _redObjects = [@[]mutableCopy];
+    if (!_redTasks) {
+        _redTasks = [@[]mutableCopy];
     }
-    return _redObjects;
+    return _redTasks;
 }
 
+-(NSArray *)greenOrderedTasks
+{
+    if (!_greenOrderedTasks) {
+        _greenOrderedTasks = [@[]mutableCopy];
+    }
+    return _greenOrderedTasks;
+}
+
+-(NSArray *)amberOrderedTasks
+{
+    if (!_amberOrderedTasks) {
+        _amberOrderedTasks = [@[]mutableCopy];
+    }
+    return _amberOrderedTasks;
+}
+
+-(NSArray *)redOrderedTasks
+{
+    if (!_redOrderedTasks) {
+        _redOrderedTasks = [@[]mutableCopy];
+    }
+    return _redOrderedTasks;
+}
 
 #pragma mark - GEDetailView Delegate
--(void)didPassBack:(GETask *)oldTask andUpdatedTask:(GETask *)updatedTask
+-(void)didEditTask
 {
-    // Remove old task from Array
-    NSUInteger indexOfTask = [self.allTaskObjects indexOfObject:oldTask];
-    NSLog(@"index of object to remove is %lu", (unsigned long)indexOfTask);
-    
-    [self.allTaskObjects removeObjectAtIndex:indexOfTask];
-    
-    // Add New Task to Array
-    [self.allTaskObjects insertObject:updatedTask atIndex:indexOfTask];
-    
-    // Save tasks to NSUserDefaults
-    
     [self saveTasks];
 }
 
 #pragma mark - Action Methods
-- (IBAction)reorderButtonPressed:(id)sender
-{
-    _isEditing = !_isEditing;
+
+- (IBAction)settingsButtonTapped:(UIBarButtonItem *)sender {
     
-    self.tableView.editing = _isEditing;
+    [self performSegueWithIdentifier:@"SettingsSegue" sender:sender];
+    
 }
 
 - (IBAction)addTaskButtonPressed:(id)sender {
@@ -158,26 +192,39 @@
 -(void)arrangeAllTasksIntoColorCodedArrays
 {
     // Remove all existing objects
-    [self.greenObjects removeAllObjects];
-    [self.amberObjects removeAllObjects];
-    [self.redObjects removeAllObjects];
+    [self.greenTasks removeAllObjects];
+    [self.amberTasks removeAllObjects];
+    [self.redTasks removeAllObjects];
     
     // Iterate throught the main array of objects and add them in
     for (GETask *task in self.allTaskObjects) {
         
         if (task.completion) {
-            [self.greenObjects addObject:task];
+            [self.greenTasks addObject:task];
         }
         
         else if ([self isDateGreaterThanCurrentDate:task.date]) {
-            [self.amberObjects addObject:task];
+            [self.amberTasks addObject:task];
         }
         
         else{
             // Put task into the overdue array
-            [self.redObjects addObject:task];
+            [self.redTasks addObject:task];
         }
     }
+}
+
+- (void)arrangeTasksIntoAlphabeticalOrder
+{
+    // Iterate through each coloured array comparing order
+    // Add to ordered array
+    NSSortDescriptor *sort = [NSSortDescriptor sortDescriptorWithKey:@"title" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    self.greenOrderedTasks = [self.greenTasks sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+    self.amberOrderedTasks = [self.amberTasks sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+    self.redOrderedTasks = [self.redTasks sortedArrayUsingDescriptors:[NSArray arrayWithObject:sort]];
+    
+    
+    NSLog(@"sorted green array = %@", [self.greenOrderedTasks description]);
 }
 
 -(NSDictionary *)taskObjectAsAPropertyList:(GETask *)taskObject
@@ -212,17 +259,14 @@
     
 }
 
--(void)updateCompletionOfTask:(GETask *)task forIndexPath:(NSIndexPath *)indexPath
+-(void)updateCompletionOfTask:(GETask *)task
 {
-    // Get indexPath of passed in task in the allTaskObjects array.
-    NSUInteger index = [self.allTaskObjects indexOfObject:task];
     
-    GETask *selectedTask = self.allTaskObjects[index];
-    
-    selectedTask.completion = !selectedTask.completion;
+    task.completion = !task.completion;
     
     [self saveTasks];
     [self arrangeAllTasksIntoColorCodedArrays];
+    [self arrangeTasksIntoAlphabeticalOrder];
     [self.tableView reloadData];
     
 }
@@ -230,6 +274,7 @@
 - (void)saveTasks
 {
     //create empty Mutable Array
+    
     NSMutableArray *allTasksAsDictionarys = [@[]mutableCopy];
     //iterate through out objects array converting each object to a dict object and add that to allTasksAsDictionary array
     
@@ -250,12 +295,12 @@
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if (section == 0) {
-        return self.greenObjects.count;
+        return self.greenTasks.count;
     }
     else if (section == 1){
-        return self.amberObjects.count;
+        return self.amberTasks.count;
     }
-    else return self.redObjects.count;
+    else return self.redTasks.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -275,25 +320,45 @@
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"cellForRowAtIndexPath: executed");
-    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     
     GETask *selectedTask;
     
-    if (indexPath.section == 0) {
-        selectedTask = self.greenObjects[indexPath.row];
+    if (!self.settings.isSortedIntoAlphabeticalOrder) {
+        
+        if (indexPath.section == 0) {
+            selectedTask = self.greenTasks[indexPath.row];
+            
+        }
+        else if (indexPath.section == 1) {
+            selectedTask = self.amberTasks[indexPath.row];
+        }
+        else{
+            selectedTask = self.redTasks[indexPath.row];
+        }
+    }
+    else
+    {
+        
+        if (indexPath.section == 0) {
+            selectedTask = self.greenOrderedTasks[indexPath.row];
+            
+        }
+        else if (indexPath.section == 1) {
+            selectedTask = self.amberOrderedTasks[indexPath.row];
+        }
+        else{
+            selectedTask = self.redOrderedTasks[indexPath.row];
+        }
         
     }
-    else if (indexPath.section == 1) {
-        selectedTask = self.amberObjects[indexPath.row];
-    }
-    else{
-        selectedTask = self.redObjects[indexPath.row];
-    }
-    
     // Configure cell and detail label
-    cell.textLabel.text = selectedTask.title;
+    // Check to see if Capitalise is set in settings
+    if (self.settings.isCapitalised) {
+        NSString *newCapitalizedString = [selectedTask.title capitalizedString];
+        cell.textLabel.text = newCapitalizedString;
+    }
+    else cell.textLabel.text = selectedTask.title;
     //format date for detail label
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateFormat:@"h:mm a EEE MMM d, yyyy"];
@@ -331,22 +396,20 @@
     GETask *selectedTask;
     switch (section) {
         case 0:
-            selectedTask = self.greenObjects[row];
+            selectedTask = self.greenTasks[row];
             break;
         case 1:
-            selectedTask = self.amberObjects[row];
+            selectedTask = self.amberTasks[row];
             break;
         case 2:
-            selectedTask = self.redObjects[row];
+            selectedTask = self.redTasks[row];
             break;
             
         default:
             break;
     }
     
-    
-    
-    [self updateCompletionOfTask:selectedTask forIndexPath:indexPath];
+    [self updateCompletionOfTask:selectedTask];
     
 }
 
@@ -366,13 +429,13 @@
         
         switch (section) {
             case 0:
-                taskToDelete = self.greenObjects[row];
+                taskToDelete = self.greenTasks[row];
                 break;
             case 1:
-                taskToDelete = self.amberObjects[row];
+                taskToDelete = self.amberTasks[row];
                 break;
             case 2:
-                taskToDelete = self.redObjects[row];
+                taskToDelete = self.redTasks[row];
                 break;
                 
             default:
@@ -383,9 +446,9 @@
         
         [self saveTasks];
         [self arrangeAllTasksIntoColorCodedArrays];
+        [self arrangeTasksIntoAlphabeticalOrder];
         
-        // *** Reloaddata ****
-        
+                
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         NSLog(@"row deleted");
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -450,17 +513,22 @@
         
         NSIndexPath *indexPath = sender;
         if (indexPath.section == 0) {
-            taskToPassIn = self.greenObjects[indexPath.row];
+            taskToPassIn = self.greenTasks[indexPath.row];
         }
         else if (indexPath.section == 1){
-            taskToPassIn = self.amberObjects[indexPath.row];
+            taskToPassIn = self.amberTasks[indexPath.row];
         }
         else if (indexPath.section == 2){
-            taskToPassIn = self.redObjects[indexPath.row];
+            taskToPassIn = self.redTasks[indexPath.row];
         }
         
         detailTaskVC.passedInTask = taskToPassIn;
         detailTaskVC.delegate = self;
+    }
+    
+    else if ([segue.identifier isEqualToString:@"SettingsSegue"]){
+        GESettingsTableViewController *settingsVC = segue.destinationViewController;
+        settingsVC.passedInSettings = self.settings;
     }
 }
 

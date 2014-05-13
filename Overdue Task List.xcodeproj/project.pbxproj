@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1036F4E4191FC93F0045F5B7 /* GESettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1036F4E3191FC93F0045F5B7 /* GESettingsTableViewController.m */; };
 		105862F619150E88001A84DD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 105862F519150E88001A84DD /* Foundation.framework */; };
 		105862F819150E88001A84DD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 105862F719150E88001A84DD /* CoreGraphics.framework */; };
 		105862FA19150E88001A84DD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 105862F919150E88001A84DD /* UIKit.framework */; };
@@ -25,7 +26,6 @@
 		1058632F19150F07001A84DD /* GEDetailTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058632E19150F07001A84DD /* GEDetailTaskViewController.m */; };
 		1058633219150F1E001A84DD /* GEEditTaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1058633119150F1E001A84DD /* GEEditTaskViewController.m */; };
 		10B4C502191649C800111254 /* GETask.m in Sources */ = {isa = PBXBuildFile; fileRef = 10B4C501191649C800111254 /* GETask.m */; };
-		10DAD4EB191F7FB200E38174 /* GESettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 10DAD4EA191F7FB200E38174 /* GESettingsViewController.m */; };
 		10DAD4EE191F807600E38174 /* GESettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 10DAD4ED191F807600E38174 /* GESettings.m */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +40,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1036F4E2191FC93F0045F5B7 /* GESettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GESettingsTableViewController.h; sourceTree = "<group>"; };
+		1036F4E3191FC93F0045F5B7 /* GESettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GESettingsTableViewController.m; sourceTree = "<group>"; };
 		105862F219150E88001A84DD /* Overdue Task List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Overdue Task List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		105862F519150E88001A84DD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		105862F719150E88001A84DD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -67,8 +69,6 @@
 		1058633119150F1E001A84DD /* GEEditTaskViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GEEditTaskViewController.m; sourceTree = "<group>"; };
 		10B4C500191649C800111254 /* GETask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GETask.h; sourceTree = "<group>"; };
 		10B4C501191649C800111254 /* GETask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GETask.m; sourceTree = "<group>"; };
-		10DAD4E9191F7FB200E38174 /* GESettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GESettingsViewController.h; sourceTree = "<group>"; };
-		10DAD4EA191F7FB200E38174 /* GESettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GESettingsViewController.m; sourceTree = "<group>"; };
 		10DAD4EC191F807600E38174 /* GESettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GESettings.h; sourceTree = "<group>"; };
 		10DAD4ED191F807600E38174 /* GESettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GESettings.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,8 +141,8 @@
 				1058632E19150F07001A84DD /* GEDetailTaskViewController.m */,
 				1058633019150F1E001A84DD /* GEEditTaskViewController.h */,
 				1058633119150F1E001A84DD /* GEEditTaskViewController.m */,
-				10DAD4E9191F7FB200E38174 /* GESettingsViewController.h */,
-				10DAD4EA191F7FB200E38174 /* GESettingsViewController.m */,
+				1036F4E2191FC93F0045F5B7 /* GESettingsTableViewController.h */,
+				1036F4E3191FC93F0045F5B7 /* GESettingsTableViewController.m */,
 				10E5A38519170521002C3B61 /* Model */,
 				1058630D19150E88001A84DD /* Images.xcassets */,
 				105862FC19150E88001A84DD /* Supporting Files */,
@@ -289,13 +289,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				1058630619150E88001A84DD /* GEAppDelegate.m in Sources */,
-				10DAD4EB191F7FB200E38174 /* GESettingsViewController.m in Sources */,
 				10DAD4EE191F807600E38174 /* GESettings.m in Sources */,
 				1058632F19150F07001A84DD /* GEDetailTaskViewController.m in Sources */,
 				1058630C19150E88001A84DD /* GEViewController.m in Sources */,
 				1058630219150E88001A84DD /* main.m in Sources */,
 				1058632C19150EF1001A84DD /* GEAddTaskViewController.m in Sources */,
 				1058633219150F1E001A84DD /* GEEditTaskViewController.m in Sources */,
+				1036F4E4191FC93F0045F5B7 /* GESettingsTableViewController.m in Sources */,
 				10B4C502191649C800111254 /* GETask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

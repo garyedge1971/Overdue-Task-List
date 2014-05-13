@@ -35,6 +35,13 @@
     [self configureView];
 }
 
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 - (void)configureView
 {
     self.editTitleTextField.text = self.passedInTask.title;
@@ -42,6 +49,8 @@
     self.editDatePicker.date = self.passedInTask.date;
     self.completeSwitch.on = self.passedInTask.completion;
 }
+
+#pragma mark - Textfield Delegate Method
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
@@ -56,46 +65,22 @@
     [self.editedDescriptionView resignFirstResponder];
 }
 
+#pragma mark - Action Methods
+
 - (IBAction)completedSwitchSwitched:(id)sender
 {
     self.completeSwitch = (UISwitch *)sender;
     self.passedInTask.completion = self.completeSwitch.on;
-    if (self.completeSwitch.on) {
-        NSLog(@"Switch is on");
-    }
-    else NSLog(@"Switch is off");
-    
 }
 
 - (IBAction)saveButtonPressed:(id)sender
 {
-    // Create a new Task object
-    GETask *updatedTask = [[GETask alloc]initWithTitle:self.editTitleTextField.text
-                                          description:self.editedDescriptionView.text
-                                                 date:self.editDatePicker.date
-                                           completion:self.completeSwitch.on];
-    
-    NSLog(@"updated task completion status = %d", self.completeSwitch.on);
-    
-    [self.delegate didEditTask:self.passedInTask toUpdatedTask:updatedTask];
+    self.passedInTask.title = self.editTitleTextField.text;
+    self.passedInTask.description = self.editedDescriptionView.text;
+    self.passedInTask.date = self.editDatePicker.date;
+    self.passedInTask.completion = self.completeSwitch.on;
+    [self.delegate didEditTask];
     
 }
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
- {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
 
 @end

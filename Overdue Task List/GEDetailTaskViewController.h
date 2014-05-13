@@ -12,9 +12,8 @@
 @protocol GEDetailTaskViewControllerDelegate <NSObject>
 
 @required
-- (void) didPassBack:(GETask *)oldTask andUpdatedTask:(GETask *)updatedTask;
+- (void) didEditTask;
 
-//- (void) passBackUpdatedCompletionStatusSet:(BOOL)status;
 
 @end
 @interface GEDetailTaskViewController : UIViewController
