@@ -144,6 +144,8 @@
 -(void)didEditTask
 {
     [self saveTasks];
+    
+    [self.tableView reloadData];
 }
 
 #pragma mark - Action Methods
